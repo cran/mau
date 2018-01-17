@@ -1,46 +1,43 @@
 # Evaluate utility functions -----------------------------------------------------------------------
 #' @title Evaluate utilities
-#' @description Evaluaction of utilities for a data.table of indexes, the utilities functions are 
+#' @description Evaluation of utilities for a data.table of indexes, the utilities functions are 
 #' computed over every index represented by each column of the input table.
-#' @param index data.table of indexes
-#' @param columns columns with indexes where the utilities will be computed
-#' @param functions vector of characters with name of functions
-#' @return data.table with utilities
-#' @details The baisc MAUT models are built with functions of constant absolute risk aversion, 
-#' this functions could be defined with simple parameters, \code{\link{Read.Utilities}} could 
-#' interpret a basic text file with and standarized definition for every utility function.
-#' @author Pedro Guarderas, Andrés Lopez
+#' @param index data.table of indexes.
+#' @param columns columns with indexes where the utilities will be computed.
+#' @param functions vector of characters with name of functions.
+#' @return data.table with utilities evaluated for every index.
+#' @details Every index has associated an utility function, inside \code{mau} is possible to employ
+#' any functions, the only special requirement is that the utility has to be normalized, this means
+#' that the utility is bounded between 0 and 1.
+#' 
+#' Also is possible to consider utilities with constant risk aversion CRA, in the sense of Arrow, 
+#' for such case there is only two types of functions \eqn{u(x) = a x + b} or 
+#' \eqn{u(x) = a e^{bx} + c}, to determine these functions, it is only necessary to specify the 
+#' parameters \eqn{a}, \eqn{b} and \eqn{c}. For a decision model only elaborated with CRA 
+#' utilities, \code{mau} could read a text file where every utility is piecewise defined.
+#' 
+#' The format for the text file containing the definition of utility functions is given by is:
+#' 
+#'   [Header] \cr
+#' \cr
+#'   [Function name] \cr
+#'   [min1 max1 a1 b1 c1] \cr
+#'   [min2 max2 a2 b2 c2] \cr
+#'   [min3 max3 a3 b3 c3] \cr
+#' ... \cr
+#'   [Function name] \cr
+#'   [min1 max1 a1 b1 c1] \cr
+#'   [min2 max2 a2 b2 c2] \cr
+#'   [min3 max3 a3 b3 c3] \cr
+#' ... \cr
+#' 
+#' If the coefficient c is non zero the function is interpreted as an exponential type.
+#' 
+#' @author Pedro Guarderas, \email{pedro.felipe.guarderas@@gmail.com}, Andrés Lopez.
 #' @seealso \code{\link{Read.Utilities}}, \code{\link{Stand.String}}
 #' @examples
-#' # Index
-#' library( data.table )
-#' index<-data.table( cod = c( 'A', 'B', 'C', 'D' ), 
-#'                    i1 = c( 0.3428570, 1, 1, 1 ),
-#'                    i2 = c( 0.5, 0.5, 1, 0.5 ), 
-#'                    i3 = c( 0.5, 1.0, 0.75, 0.25 ),
-#'                    i4 = c( 0, 0.2696746, 0.6751261, 0.7401660 ),
-#'                    i5 = c( 0.2797259, 0.2981198, 1, 0.1952864 ) )
-#' 
-#' # Loading utilities
-#' file<-system.file("extdata", "utilities.txt", package = "mau" )
-#' script<-'utilities.R'
-#' lines<-17
-#' skip<-2
-#' encoding<-'utf-8'
-#' functions<-Read.Utilities( file, script, lines, skip, encoding )
-#' source( 'utilities.R' )
-#'
-#' # Index positions
-#' columns<-c( 2, 3, 4, 5 )
-#' 
-#' # Associated names of functions
-#' functions<-sapply( c( 'Project', 'Self implementation', 'External and local relations', 
-#'                       'Scope of capabilities' ),
-#'                    FUN = Stand.String )
-#' names( functions )<-NULL
-#' 
-#' # Evaluation of utilities
-#' utilities<-Eval.Utilities( index, columns, functions )
+#' library( mau )
+#' vignette( topic = 'Running_MAUT', package = 'mau' ) 
 #' @export
 Eval.Utilities<-function( index, columns, functions ) {
   

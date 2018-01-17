@@ -1,26 +1,27 @@
 # Plot decision MAUT model -------------------------------------------------------------------------
 #' @title Plot decision MAUT model with weights simulations
-#' @description Plot the decision modelo considering the weights simulated with a Dirichlet 
-#' distributions, every simulation is plotted with lines and in addition a box plot is included
-#' to account the behavior of every global utility.
+#' @description Spider plot for the decision model considering the weights simulated with a Dirichlet 
+#' distributions, every simulation is represented with lines, a box plot is included to account the 
+#' behavior of every global utility.
 #' @param S first element of the simulation list produced by the function 
 #' \code{\link{Sim.Weights}}, \code{\link{Sim.Const.Weights}}.
-#' @param title text for the title plot
-#' @param xlab text for x-axis label
-#' @param ylab text for y-axis label
-#' @param box.col color for the boxes
+#' @param title text for the title plot.
+#' @param xlab text for x-axis label.
+#' @param ylab text for y-axis label.
+#' @param box.col color for the boxes.
 #' @param box.outlier.col color for the outlier points representing the extreme observations in the
-#' boxplot
+#' boxplot.
 #' @param lines.cols the spectrum of colors for the simulation is selected randomly from a base 
-#' color
-#' @param utility.col the main utility value is also plotted with this specific color
+#' color.
+#' @param utility.col the main utility value is also plotted with this specific color.
 #' @param utility.point.col the line of main utilities is plotted with points represented with this
-#' color
-#' @param text.col color for the text values plotted for each utility
-#' @return ggplot object with the plot
+#' color.
+#' @param text.col color for the text values plotted for each utility.
+#' @return ggplot object with the plot of simulations.
 #' @author Pedro Guarderas
 #' @seealso \code{\link{Sim.Const.Weights}} \code{\link{Sim.Weights}}
-#' @importFrom ggplot2 %+% ggplot geom_line scale_colour_manual geom_boxplot geom_point geom_text xlab ylab theme_minimal scale_y_continuous theme ggtitle
+#' @importFrom ggplot2 %+% ggplot geom_line scale_colour_manual geom_boxplot geom_point geom_text 
+#' xlab ylab theme_minimal scale_y_continuous theme ggtitle
 #' @importFrom grDevices colorRampPalette colors
 #' @export
 Plot.Simulation.Weight<-function( S, title = 'Simulations', xlab = 'ID', ylab = 'Utility',
