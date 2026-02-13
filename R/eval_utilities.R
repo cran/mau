@@ -34,31 +34,39 @@
 #' If the coefficient c is non zero the function is interpreted as an exponential type.
 #' 
 #' @author Pedro Guarderas, \email{pedro.felipe.guarderas@@gmail.com}, Andrés Lopez.
-#' @seealso \code{\link{Read.Utilities}}, \code{\link{Stand.String}}
+#' @seealso \code{\link{read_utilities}}, \code{\link{stand_string}}
 #' @examples
 #' library( mau )
 #' vignette( topic = 'Running_MAUT', package = 'mau' ) 
 #' @export
-Eval.Utilities<-function( index, columns, functions ) {
+eval_utilities <- function( index, columns, functions ) {
   
-  utilities<-copy( index )
+  utilities <- copy( index )
   
   if ( length( columns ) == length( functions ) ) {
-    N<-length( columns )
+    N <- length( columns )
     for ( i in 1:N ) {
-      c<-names( utilities )[ columns[i] ]
-      c<-as.name( c )
-      f<-functions[i]
-      f<-as.name( f )
-      E<-substitute( expression( utilities$column<-sapply( utilities$column, FUN = Function  ) ), 
-                     list( column = c, Function = f ) )
-      E<-eval( E )
+      c <- names( utilities )[ columns[i] ]
+      c <- as.name( c )
+      f <- functions[i]
+      f <- as.name( f )
+      E <- substitute( expression( utilities$column <- sapply( utilities$column, FUN = Function  ) ), 
+                       list( column = c, Function = f ) )
+      E <- eval( E )
       eval( E )
     }
   }
   
   setnames( utilities, 1:ncol( utilities ), 
             c( names( utilities )[1], paste( 'u', 1:( ncol(utilities) - 1 ), sep = '' ) ) )
-
+  
   return( utilities )
+}
+
+Eval.Utilities <- function( index, columns, functions ) {
+  .Deprecated(
+    new = 'eval_utilities',
+    msg = 'The function Eval.Utilities will be replaced by the function eval_utilities',
+    old = 'Eval.Utilities' )
+  return( eval_utilities( index, columns, functions ) )
 }

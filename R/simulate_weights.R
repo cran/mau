@@ -10,33 +10,41 @@
 #' simulated with a concentration around given weights.
 #' @author Pedro Guarderas
 #' \email{pedro.felipe.guarderas@@gmail.com}
-#' @seealso \code{\link{Eval.Utilities}}
+#' @seealso \code{\link{eval_utilities}}
 #' @importFrom gtools rdirichlet
 #' @examples
 #' library( data.table )
-#' N<-10
-#' utilities<-data.table( id = 1:N, 
+#' N <- 10
+#' utilities <- data.table( id = 1:N, 
 #'                        u1 = runif( N, 0, 1 ), 
 #'                        u2 = runif( N, 0, 1 ), 
 #'                        u3 = runif( N, 0, 1 ),
 #'                        u4 = runif( N, 0, 1 ) )
-#' n<-100
-#' alpha<-c( 0.2, 0.5, 0.1, 0.2 )
-#' S<-Sim.Weights( n, utilities, alpha )
+#' n <- 100
+#' alpha <- c( 0.2, 0.5, 0.1, 0.2 )
+#' S <- sim_weights( n, utilities, alpha )
 #' @export
-Sim.Weights<-function( n, utilities, alpha ) {
-  W<-matrix( alpha, length( alpha ), 1 )
+sim_weights <- function( n, utilities, alpha ) {
+  W <- matrix( alpha, length( alpha ), 1 )
   if ( n > 1 ) {
-    W<-cbind( W, t( rdirichlet( n = n-1, alpha ) ) )
+    W <- cbind( W, t( rdirichlet( n = n-1, alpha ) ) )
   }
-  colnames( W )<-paste( 'w', 1:n, sep = '' )
+  colnames( W ) <- paste( 'w', 1:n, sep = '' )
   
-  M<-ncol( utilities )
-  S<-as.matrix( utilities[ , 2:M, with = FALSE ] )
-  S<-S %*% W  
-  S<-cbind( utilities[,1,with = FALSE], S )
+  M <- ncol( utilities )
+  S <- as.matrix( utilities[ , 2:M, with = FALSE ] )
+  S <- S %*% W  
+  S <- cbind( utilities[,1,with = FALSE], S )
   setnames( S, 1:(n+1), c( 'id', paste( 's', 1:n, sep = '' ) ) )
   return( list( simulation = S, weights = W ) )
+}
+
+Sim.Weights <- function( n, utilities, alpha ) {
+  .Deprecated(
+    new = 'sim_weights',
+    msg = 'The function Sim.Weights will be replaced by the function sim_weights',
+    old = 'Sim.Weights' )
+  return( sim_weights( n, utilities, alpha ) )
 }
 
 # Simulation of constrained weights ----------------------------------------------------------------
@@ -54,44 +62,52 @@ Sim.Weights<-function( n, utilities, alpha ) {
 #' only to meet specific constraints.
 #' @author Pedro Guarderas
 #' \email{pedro.felipe.guarderas@@gmail.com}
-#' @seealso \code{\link{Eval.Utilities}}
+#' @seealso \code{\link{eval_utilities}}
 #' @examples
 #' library( data.table )
-#' N<-10
-#' utilities<-data.table( id = 1:N, 
+#' N <- 10
+#' utilities <- data.table( id = 1:N, 
 #'                        u1 = runif( N, 0, 1 ), 
 #'                        u2 = runif( N, 0, 1 ), 
 #'                        u3 = runif( N, 0, 1 ),
 #'                        u4 = runif( N, 0, 1 ) )
-#' n<-100
-#' alpha<-c( 0.2, 0.5, 0.1, 0.2 )
-#' constraints<-list( list( c(1,2), 0.7 ), 
+#' n <- 100
+#' alpha <- c( 0.2, 0.5, 0.1, 0.2 )
+#' constraints <- list( list( c(1,2), 0.7 ), 
 #'                    list( c(3,4), 0.3 ) )
-#' S<-Sim.Const.Weights( n, utilities, alpha, constraints )
-#' plot.S<-Plot.Simulation.Weight( S$simulation, title = 'Simulations', 
-#'                                 xlab = 'ID', ylab = 'Utility' ) 
+#' S <- sim_const_weights( n, utilities, alpha, constraints )
+#' plot.S <- plot_sim_weight( S$simulation, title = 'Simulations', 
+#'                            xlab = 'ID', ylab = 'Utility' ) 
 #' plot( plot.S )
 #' @importFrom gtools rdirichlet
 #' @export
-Sim.Const.Weights<-function( n, utilities, alpha, constraints ) {
-
-  W<-matrix( 0, length(alpha), n - 1 )
+sim_const_weights <- function( n, utilities, alpha, constraints ) {
+  
+  W <- matrix( 0, length(alpha), n - 1 )
   
   if ( n > 1 ) { 
     for( i in 1:length( constraints ) )  {
-      A<-alpha[ constraints[[i]][[1]] ] * constraints[[i]][[2]]
-      W[ constraints[[i]][[1]], ]<-constraints[[i]][[2]] * t( rdirichlet( n = n-1, A ) )
+      A <- alpha[ constraints[[i]][[1]] ] * constraints[[i]][[2]]
+      W[ constraints[[i]][[1]], ] <- constraints[[i]][[2]] * t( rdirichlet( n = n-1, A ) )
     }
   }
   
-  W<-cbind( alpha, W )
-  colnames( W )<-paste( 'w', 1:n, sep = '' )
+  W <- cbind( alpha, W )
+  colnames( W ) <- paste( 'w', 1:n, sep = '' )
   
-  M<-ncol( utilities )
-  S<-as.matrix( utilities[ , 2:M, with = FALSE ] )
-  S<-S %*% W  
-  S<-cbind( utilities[,1,with = FALSE], S )
+  M <- ncol( utilities )
+  S <- as.matrix( utilities[ , 2:M, with = FALSE ] )
+  S <- S %*% W  
+  S <- cbind( utilities[,1,with = FALSE], S )
   setnames( S, 1:(n+1), c( 'id', paste( 's', 1:n, sep = '' ) ) )
   
   return( list( simulation = S, weights = W ) )
+}
+
+Sim.Const.Weights <- function( n, utilities, alpha, constraints ) {
+  .Deprecated(
+    new = 'sim_const_weights',
+    msg = 'The function Sim.Const.Weights will be replaced by the function sim_const_weights',
+    old = 'Sim.Const.Weights' )
+  return( sim_const_weights( n, utilities, alpha, constraints ) )
 }
